@@ -2,6 +2,11 @@
 
 The [Azure retail pricing API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices) can give you detailed information on how Azure services are priced across regions.  The PowerShell cmdlet below uses the API to create a custom pricing grid for the Azure services and regions you are interested in, giving you a simple way of indexing pricing across regions. 
 
+The intention of this project is to help you answer important questions like:
+* Is Sweden Central more expensive to run the same services than West Europe?
+* Could I save money by using France Central instead?
+* Are there some Azure services that are more expensive for a given region even though it is cheaper overall (e.g. Sweden Central)?
+
 ![sample pricing output](./image/ResourcePricingByRegion.png)
 
 ## Pricing drivers
