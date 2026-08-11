@@ -189,6 +189,8 @@ Pass the array of regions and the hashmap with the resource queries to the cmdle
 
 ![sample pricing output](./image/ResourcePricingByRegion.png)
 
+You can find the code for the PowerShell cmdlet [here](./PowerShell/Get-AzServiceRegionPricing.ps1).
+
 ### Usage notes
 * The command returns a pricing matrix with one column per requested region and one row per distinct current price variant or tier. 
 * Each row includes the product, SKU, ARM SKU, meter, unit, tier minimum, price type, and reservation term needed to identify the variant. `TierMinimumUnits` is expressed in `UnitOfMeasure`: for a `1M` meter, a tier minimum of `1` starts at one million units. `ReservationTerm` distinguishes terms such as one-year and three-year reservation prices and is empty for price types that do not use it.
