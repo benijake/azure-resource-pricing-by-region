@@ -34,7 +34,13 @@ You will need to break down each service into the different components that driv
 | Microsoft Foundry | model deployment type, input/output tokens, and hosted agent compute/memory |
 | Azure AI Search | search units, semantic ranker, and enrichment |
 | Recovery Services vault | protected instances, backup storage, and Site Recovery replicas |
+| Azure Firewall | tier, deployment hours, capacity units, and data processed |
 | Application Gateway | Standard/WAF v2 fixed hours and capacity units |
+| VPN Gateway | gateway SKU and connection hours |
+| ExpressRoute | gateway SKU, circuit bandwidth, and metered/unlimited data plan |
+| Azure Bastion | gateway hours, additional scale instances, and outbound data |
+| Virtual WAN | hub hours, data processed, routing infrastructure, and gateway scale units |
+| Public IP addresses | IP version, SKU, allocation type, and address hours |
 
 Below are some example resource queries that use the pricing drivers above.  Each resource query must include at least one selective field: `ProductName`, `SkuName`, `ArmSkuName`, or `MeterName`.  
 
@@ -169,12 +175,37 @@ $queries = @(
     @{ Name = 'Recovery Vault Standard LRS Data Stored'; ServiceName = 'Backup'; ProductName = 'Backup'; SkuName = 'Standard'; MeterName = 'Standard LRS Data Stored' },
     @{ Name = 'Recovery Vault VM Replicated to Azure'; ServiceName = 'Azure Site Recovery'; ProductName = 'Azure Site Recovery'; SkuName = 'Azure'; MeterName = 'VM Replicated to Azure' },
 
-    # Networking services: regional meters - most services are globally available with one standard price
+    # Networking services: regional meters
+    # Azure Firewall: Standard/Premium deployment hours, capacity units, and data processed
+    @{ Name = 'Azure Firewall Standard Deployment'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Standard'; MeterName = 'Standard Deployment' },
+    @{ Name = 'Azure Firewall Standard Capacity Unit'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Standard'; MeterName = 'Standard Capacity Unit' },
+    @{ Name = 'Azure Firewall Standard Data Processed'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Standard'; MeterName = 'Standard Data Processed' },
+    @{ Name = 'Azure Firewall Premium Deployment'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Premium'; MeterName = 'Premium Deployment' },
+    @{ Name = 'Azure Firewall Premium Capacity Unit'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Premium'; MeterName = 'Premium Capacity Unit' },
+    @{ Name = 'Azure Firewall Premium Data Processed'; ServiceName = 'Azure Firewall'; ProductName = 'Azure Firewall'; SkuName = 'Premium'; MeterName = 'Premium Data Processed' },
+
     # Application Gateway: Standard v2 and WAF v2 fixed hours and capacity units
     @{ Name = 'Application Gateway Standard v2 Fixed Cost'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway Standard v2'; SkuName = 'Standard'; MeterName = 'Standard Fixed Cost' },
     @{ Name = 'Application Gateway Standard v2 Capacity Units'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway Standard v2'; SkuName = 'Standard'; MeterName = 'Standard Capacity Units' },
     @{ Name = 'Application Gateway WAF v2 Fixed Cost'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway WAF v2'; SkuName = 'Standard'; MeterName = 'Standard Fixed Cost' },
     @{ Name = 'Application Gateway WAF v2 Capacity Units'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway WAF v2'; SkuName = 'Standard'; MeterName = 'Standard Capacity Units' },
+
+    # VPN Gateway and ExpressRoute: representative zone-redundant gateway hours
+    @{ Name = 'VPN Gateway VpnGw1AZ'; ServiceName = 'VPN Gateway'; ProductName = 'VPN Gateway'; SkuName = 'VpnGw1AZ'; MeterName = 'VpnGw1AZ' },
+    @{ Name = 'ExpressRoute ErGw1AZ Gateway'; ServiceName = 'ExpressRoute'; ProductName = 'ExpressRoute Gateway'; SkuName = 'ErGw1AZ'; MeterName = 'ErGw1AZ Gateway' },
+
+    # Azure Bastion: Standard gateway hours and additional scale instances
+    @{ Name = 'Azure Bastion Standard Gateway'; ServiceName = 'Azure Bastion'; ProductName = 'Azure Bastion'; SkuName = 'Standard'; MeterName = 'Standard Gateway' },
+    @{ Name = 'Azure Bastion Standard Additional Gateway'; ServiceName = 'Azure Bastion'; ProductName = 'Azure Bastion'; SkuName = 'Standard'; MeterName = 'Standard Additional Gateway' },
+
+    # Virtual WAN: Standard hub hours, data processed, routing, and S2S gateway scale units
+    @{ Name = 'Virtual WAN Standard Hub Unit'; ServiceName = 'Virtual WAN'; ProductName = 'Virtual WAN'; SkuName = 'Standard Hub'; MeterName = 'Standard Hub Unit' },
+    @{ Name = 'Virtual WAN Standard Hub Data Processed'; ServiceName = 'Virtual WAN'; ProductName = 'Virtual WAN'; SkuName = 'Standard Hub'; MeterName = 'Standard Hub Data Processed' },
+    @{ Name = 'Virtual WAN Routing Infrastructure Unit'; ServiceName = 'Virtual WAN'; ProductName = 'Virtual WAN'; SkuName = 'Routing Infrastructure Unit'; MeterName = 'Routing Infrastructure Unit' },
+    @{ Name = 'Virtual WAN VPN S2S Scale Unit'; ServiceName = 'Virtual WAN'; ProductName = 'Virtual WAN'; SkuName = 'VPN S2S Scale Unit'; MeterName = 'VPN S2S Scale Unit' },
+
+    # Public IP addresses: Standard static IPv4 address hours
+    @{ Name = 'Public IP Standard Static IPv4'; ServiceName = 'Virtual Network'; ProductName = 'IP Addresses'; SkuName = 'Standard'; MeterName = 'Standard IPv4 Static Public IP' },
 
     # Reservations: each query emits separate 1 Year and 3 Years rows when both are offered
     @{ Name = 'SQL MI General Purpose Gen5 Reservation'; ServiceName = 'SQL Managed Instance'; ArmSkuName = 'SQLMI_GP_Compute_Gen5'; PriceType = 'Reservation' },
