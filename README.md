@@ -34,6 +34,7 @@ You will need to break down each service into the different components that driv
 | Microsoft Foundry | model deployment type, input/output tokens, and hosted agent compute/memory |
 | Azure AI Search | search units, semantic ranker, and enrichment |
 | Recovery Services vault | protected instances, backup storage, and Site Recovery replicas |
+| Application Gateway | Standard/WAF v2 fixed hours and capacity units |
 
 Below are some example resource queries that use the pricing drivers above.  Each resource query must include at least one selective field: `ProductName`, `SkuName`, `ArmSkuName`, or `MeterName`.  
 
@@ -168,6 +169,13 @@ $queries = @(
     @{ Name = 'Recovery Vault Standard LRS Data Stored'; ServiceName = 'Backup'; ProductName = 'Backup'; SkuName = 'Standard'; MeterName = 'Standard LRS Data Stored' },
     @{ Name = 'Recovery Vault VM Replicated to Azure'; ServiceName = 'Azure Site Recovery'; ProductName = 'Azure Site Recovery'; SkuName = 'Azure'; MeterName = 'VM Replicated to Azure' },
 
+    # Networking services: regional meters - most services are globally available with one standard price
+    # Application Gateway: Standard v2 and WAF v2 fixed hours and capacity units
+    @{ Name = 'Application Gateway Standard v2 Fixed Cost'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway Standard v2'; SkuName = 'Standard'; MeterName = 'Standard Fixed Cost' },
+    @{ Name = 'Application Gateway Standard v2 Capacity Units'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway Standard v2'; SkuName = 'Standard'; MeterName = 'Standard Capacity Units' },
+    @{ Name = 'Application Gateway WAF v2 Fixed Cost'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway WAF v2'; SkuName = 'Standard'; MeterName = 'Standard Fixed Cost' },
+    @{ Name = 'Application Gateway WAF v2 Capacity Units'; ServiceName = 'Application Gateway'; ProductName = 'Application Gateway WAF v2'; SkuName = 'Standard'; MeterName = 'Standard Capacity Units' },
+
     # Reservations: each query emits separate 1 Year and 3 Years rows when both are offered
     @{ Name = 'SQL MI General Purpose Gen5 Reservation'; ServiceName = 'SQL Managed Instance'; ArmSkuName = 'SQLMI_GP_Compute_Gen5'; PriceType = 'Reservation' },
     @{ Name = 'PostgreSQL Flexible Server Ddsv4 Reservation'; ServiceName = 'Azure Database for PostgreSQL'; ArmSkuName = 'AzureDB_PostgreSQL_Flexible_Server_General_Purpose_Ddsv4Series_Compute'; PriceType = 'Reservation' },
@@ -208,4 +216,3 @@ You can find the code for the PowerShell cmdlet [here](./PowerShell/Get-AzServic
 * If multiple tiers match, apply each price from its `TierMinimumUnits` threshold up to the next tier threshold. A zero-price tier can represent a free allowance rather than unlimited free usage.
 * If multiple non-tier rows match, compare their returned product, SKU, ARM SKU, meter, and unit fields, then add the distinguishing values to the query.
 * If a regional cell contains `n/a`, remove one descriptive field at a time and retry while retaining the region, price type, and stable meter or ARM SKU. Do not substitute another region's price without confirming that the offer is globally priced.
-
