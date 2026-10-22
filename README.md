@@ -25,7 +25,7 @@ You will need to break down each service into the different components that driv
 | Azure Synapse Analytics | dedicated/serverless SQL, Spark, pipelines, and backup storage |
 | Azure Key Vault | standard operations, cryptographic operations, and managed HSM capacity |
 | Azure App Service | plan size, operating system, instance hours |
-| API Management | call consumption and provisioned gateway units |
+| API Management | classic/v2 provisioned gateway units and call consumption |
 | Event Grid | event/MQTT operations and namespace throughput |
 | Event Hubs | ingress events, throughput/processing units, and capture |
 | Azure Cache for Redis | legacy cache tier and size |
@@ -130,9 +130,13 @@ $queries = @(
     @{ Name = 'App Service Premium v3 P1 Windows'; ServiceName = 'Azure App Service'; ProductName = 'Azure App Service Premium v3 Plan'; SkuName = 'P1 v3'; MeterName = 'P1 v3 App' },
     @{ Name = 'App Service Premium v3 P1 Linux'; ServiceName = 'Azure App Service'; ProductName = 'Azure App Service Premium v3 Plan - Linux'; ArmSkuName = 'Azure_App_Service_Premium_v3_Plan_Linux_P1_v3'; MeterName = 'P1 v3 App' },
 
-    # API Management: call consumption and provisioned gateway units
+    # API Management: Consumption, classic Premium, and v2 gateway units and calls
     @{ Name = 'API Management Consumption Calls'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Consumption'; MeterName = 'Consumption Calls' },
+    @{ Name = 'API Management Basic v2 Unit'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Basic v2'; MeterName = 'Basic v2 Unit' },
     @{ Name = 'API Management Standard v2 Unit'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Standard v2'; MeterName = 'Standard v2 Unit' },
+    @{ Name = 'API Management Premium v2 Unit'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Premium v2'; MeterName = 'Premium v2 Unit' },
+    @{ Name = 'API Management Basic v2 Calls'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Basic v2'; MeterName = 'Basic v2 Calls' },
+    @{ Name = 'API Management Standard v2 Calls'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Standard v2'; MeterName = 'Standard v2 Calls' },
     @{ Name = 'API Management Premium Unit'; ServiceName = 'API Management'; ProductName = 'API Management'; SkuName = 'Premium'; MeterName = 'Premium Unit' },
 
     # Event Grid: event/MQTT operations and namespace throughput
@@ -235,6 +239,7 @@ You can find the code for the PowerShell cmdlet [here](./PowerShell/Get-AzServic
 * Each row includes the product, SKU, ARM SKU, meter, unit, tier minimum, price type, and reservation term needed to identify the variant. `TierMinimumUnits` is expressed in `UnitOfMeasure`: for a `1M` meter, a tier minimum of `1` starts at one million units. `ReservationTerm` distinguishes terms such as one-year and three-year reservation prices and is empty for price types that do not use it.
 * Multiple matches are not collapsed, except API aliases that differ only because one record omits `ArmSkuName`. 
 * A regional cell contains `n/a` when the Retail Prices API returns no current record matching that exact query and variant (false negatives can occur when filter field values are represented differently across regions - see above). 
+* API Management Basic v2, Standard v2, and Premium v2 are queried separately from classic tiers. Basic v2 and Standard v2 call meters include allowance and overage tiers; the unit meters represent gateway capacity. A published retail price does not confirm deployment availability: check the [API Management v2 region availability table](https://learn.microsoft.com/en-us/azure/api-management/api-management-region-availability) before selecting a region. 
 * A cell contains `error` when its lookup fails (often due to transient server-side issues).
 * Reservation rows contain the Retail Prices API amount for the displayed term, whereas Consumption rows normally contain a per-unit usage price.  Reservation availability can differ from consumption availability for the same SKU and region. 
 * The DeepSeek examples use Global meters, for which inference can be processed in any Azure region where the model is deployed; use a Standard/Regional meter when processing must remain in the resource region and that deployment type is available. 
